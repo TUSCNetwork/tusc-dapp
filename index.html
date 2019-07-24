@@ -1,0 +1,520 @@
+<html>
+	<head>
+<style>
+.approve_btn,
+.swap_btn {
+	display: none;
+}
+</style>
+		<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+		<script>
+			//ropsten  *****************************************
+			const contract_address = "0x04861e6eb04889f0549d52be118e7c66e92ac9dc";
+			const occ_contract_address = "0x75584b2bfa5eb391c8234abcfb4cde5c07e2cf30";
+
+			const erc20_abi = [
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "name",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "approve",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "totalSupply",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transferFrom",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "decimals",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "version",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      }
+    ],
+    "name": "balanceOf",
+    "outputs": [
+      {
+        "name": "balance",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "symbol",
+    "outputs": [
+      {
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "transfer",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "name": "_value",
+        "type": "uint256"
+      },
+      {
+        "name": "_extraData",
+        "type": "bytes"
+      }
+    ],
+    "name": "approveAndCall",
+    "outputs": [
+      {
+        "name": "success",
+        "type": "bool"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "name": "_spender",
+        "type": "address"
+      }
+    ],
+    "name": "allowance",
+    "outputs": [
+      {
+        "name": "remaining",
+        "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "name": "_initialAmount",
+        "type": "uint256"
+      },
+      {
+        "name": "_tokenName",
+        "type": "string"
+      },
+      {
+        "name": "_decimalUnits",
+        "type": "uint8"
+      },
+      {
+        "name": "_tokenSymbol",
+        "type": "string"
+      }
+    ],
+    "type": "constructor"
+  },
+  {
+    "payable": false,
+    "type": "fallback"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_from",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "_to",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Transfer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "name": "_spender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "_value",
+        "type": "uint256"
+      }
+    ],
+    "name": "Approval",
+    "type": "event"
+  },
+];
+const abi = [
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "last_occ_balance",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "tusc_address",
+				"type": "string"
+			}
+		],
+		"name": "doSwap",
+		"outputs": [
+			{
+				"name": "success",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "occ_token",
+		"outputs": [
+			{
+				"name": "",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "tokens_swapped",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "swaps_attempted",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "total_tokens",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "_omega_address",
+				"type": "address"
+			},
+			{
+				"name": "_occ_contract_address",
+				"type": "address"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	}
+];
+
+let contract;
+let occ_contract;
+let occ_balance = null;
+let account_num = null;
+
+window.addEventListener('load', async () => {
+	// Modern dapp browsers
+	if (window.ethereum) {
+		window.web3 = new Web3(ethereum);
+		try {
+			await ethereum.enable(); // Request account access
+		} catch (error) {
+			console.log("ethereum.enable() failed: ");
+			console.log(error);
+		}
+
+	} else if (window.web3) { // Legacy dapp browsers
+		window.web3 = new Web3(web3.currentProvider);
+		// Accounts already exposed
+	}
+
+
+	if (typeof(web3) == 'undefined') {
+		return console.log("(web3 not found)");
+	}
+
+	contract = web3.eth.contract(abi).at(contract_address);
+	occ_contract = web3.eth.contract(erc20_abi).at(occ_contract_address);
+
+	let html = "<option>--Select Account--</option>";
+	for (let i = 0; i < web3.eth.accounts.length; i++)
+		html += '<option>' + web3.eth.accounts[i] + '</option>';
+
+	$('.accounts').html(html);
+	$('.accounts').on('change', function() {
+		account_num = this.value;
+		getBalance();
+	});
+
+	$('.approve_btn').click(function() {
+		occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
+			handleError(error);
+			doSwap();
+			//$('.swap_btn').show();
+		});
+	});
+});
+
+function handleError(error) {
+	if (error) {
+		console.log(error);
+		alert(error);
+		throw error;
+	}
+}
+
+function checkTuscAddress(tusc_address)
+{
+	// Call backend to verify if tusc_address is valid
+	return true;
+}
+
+function doSwap()
+{
+	if (confirm("Are you SURE the TUSC address is correct?")) {
+		var tusc_address = $("#tusc_address").val();
+		if (!checkTuscAddress(tusc_address)) {
+			alert("TUSC address does not exist...aborting transaction.");
+			return;
+		}
+
+		try {
+			contract.doSwap.sendTransaction(tusc_address, {gasPrice: web3.toWei(4.1, 'Gwei') }, (error, result) => {
+				handleError(error);
+
+				console.log("txhash: " + result);
+				$("#result").html('<a href="https://ropsten.etherscan.io/tx/' + result + '">Transaction Results</a>');
+				// TODO: getTransactionReceipt
+			});
+		} catch (e) {
+			console.log(e);
+			alert("Error (details in console)");
+		}
+	}
+}
+
+function getBalance()
+{
+	occ_contract.balanceOf.call(account_num, (error, result) => {
+		handleError(error);
+
+		console.log(result);
+		setOccBalance(result);
+	});
+}
+
+function setOccBalance(balance) {
+	occ_balance = balance;
+	var display_balance = (balance.c[0] / 10000).toFixed(5);
+	$('.balance').text('OCC Balance: ' + display_balance.toLocaleString());
+	$('.approve_btn').show();
+}
+		</script>
+	</head>
+	<body>
+		<h1>OCC to TUSC Swap</h1>
+		<hr />
+
+		<label for="tusc_address">TUSC Address (to swap OCC into)</label>
+		<input id="tusc_address" type="text" />
+		<hr />
+		<select class='accounts'></select>
+		<div class='balance'></div>
+		<br />
+			<input type="button" class="approve_btn" value="Approve Full OCC Balance Swap" />
+		<hr />
+		<!--
+		<p>
+			<input type="button" class="swap_btn" value="Do the Swap" onclick="doSwap()" />
+		</p>
+		-->
+		<br />
+		<hr />
+		<br />
+		<div id="result"></div>
+	</body>
+</html>
