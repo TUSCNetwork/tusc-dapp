@@ -1,0 +1,47 @@
+pragma solidity ^0.5.1;
+
+
+// Just using this as a limited interface to the existing OCC contract
+contract OCC {
+    function balanceOf(address _owner) public view returns (uint256 balance) {}
+    function transferFrom(address _from, address _to, uint _value) public returns (bool success) {}
+}
+
+// Test Ropsten Omega: 0x728d7624f809462b80f7d05fdd897e563c45a36b
+
+contract OCC2TUSC {
+    address omega_address;
+    OCC public occ_token;
+    uint256 public constant total_tokens = 100000000000;
+    uint256 public tokens_swapped = 0;
+    uint256 public swaps_attempted = 0;
+    
+    uint256 public last_occ_balance;
+    
+    constructor(address _omega_address, address _occ_contract_address) public {
+        omega_address = _omega_address;
+        occ_token = OCC(address(_occ_contract_address));
+    }
+    
+    function doSwap(string memory tusc_address) public returns (bool success) {
+        swaps_attempted++;
+        last_occ_balance = occ_token.balanceOf(msg.sender);
+        if (last_occ_balance > 0)
+        {
+            bool result = occ_token.transferFrom(msg.sender, omega_address, last_occ_balance);
+            if (result)
+            {
+                tokens_swapped += last_occ_balance;
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /*
+    function getOccBalance() public returns (uint256) {
+        last_occ_balance = occ_token.balanceOf(msg.sender);
+        return last_occ_balance;
+    }*/
+    
+}
