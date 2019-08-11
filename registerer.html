@@ -1,0 +1,88 @@
+<html>
+	<head>
+            <a href="index.html"><h2>Back</h2></a>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="scripts.js"></script>
+    <script type = "text/javascript" language = "javascript">
+        $(document).ready(function() {
+            $("#get_key_pair").click(async function(){
+                try {
+                    var brain_key = await suggestBrainKey();
+                    if ( brain_key ) {
+                        document.getElementById("priv_key_result").innerHTML = brain_key.wif_priv_key;
+                        document.getElementById("pub_key_result").innerHTML = brain_key.pub_key;
+                        document.getElementById("key_phrase_result").innerHTML = brain_key.brain_priv_key;
+                    } else {
+                        document.getElementById("get_key_error").innerHTML = "Could not get key pair. Please contact TUSC support: ";
+                    }
+                } catch(error) {
+                    console.log(error);
+                }
+            });
+        }); // End document ready
+    </script>
+	</head>
+    <body style="width:36em;margin: 0 auto;max-width: 100%;line-height: 1.5;font-size: 18px">
+        
+		<h1>TUSC Account Registration</h1>
+        <hr />
+        <div id="instructions">
+            <p>Follow the steps below to swap OCC tokens to TUSC tokens.</p>
+            <p>OCC are swapped at a 2 OCC to 1 TUSC ratio.</p>
+            <p>To swap OCC to TUSC you will need to register a new TUSC account. The form below allows you to retrieve a new
+            public/private key pair and key phrase from the TUSC blockchain which you will need to register a new account.
+            The overall swap process is as follows:</p>
+            
+            <ol type="1">
+                <li>Ensure you have a valid account on the Ethereum blockchain with OCC tokens.</li>
+                <li>Ensure your Ethereum account is accessible via the MetaMask wallet.</li>
+                <li>Retrieve a new public and private key pair and key phrase from the TUSC blockchain.</li>
+                <li>Using the public key from step 3, register a new TUSC account.</li>
+                <li>Press the "Approve Full OCC Balance Swap" button below and confirm the prompt.</li>
+                <li>Wait at least 15 minutes for the transfer to occur.</li>
+                <li>Retrieve your TUSC account's balance by using the appropriate form below.</li>
+            </ol>
+        </div>
+        <hr />
+        <div id="Forms">
+            <div><h2>Retrieve a new public and private key pair and key phrase from the TUSC blockchain.</h2>
+                    <br />
+                    <input type="button" id="get_key_pair" value="Get new keys and key phrase"/>
+                    <br />
+                    <br />
+                    <label for="priv_key_result">Private key:</label><br />
+                    <textarea rows="2" cols="55" id="priv_key_result"></textarea><br />
+                    <label for="pub_key_result">Public key:</label><br />
+                    <textarea rows="2" cols="55" id="pub_key_result"></textarea><br />
+                    <label for="key_phrase_result">Key phrase:</label><br />
+                    <textarea rows="3" cols="55" id="key_phrase_result"></textarea><br />
+                    <div id="get_key_error"></div>
+                    <br />
+                <p>Write the private key, public key, and key phrase down and save it in a secure location.<br /> 
+                    <i>DO NOT SHARE THE <b>PRIVATE KEY</b> OR <b>KEY PHRASE</b> WITH ANYONE!</i>
+                </p>
+                <p>We do not log any of the requests for keys.</p>
+            </div>
+            <hr />
+            <div><h2>Register a new TUSC account</h2>
+                <div>
+                    Write your <b>*public key*</b> that you received from above into the below text field.<br />
+                    <label for="register_account_public_key">Your public key:</label><br />
+                    <textarea rows="2" cols="55" id="register_account_public_key" type="text"></textarea><br /><br />
+                    Write the TUSC account name you want to use into the below text field:<br />
+                    <textarea rows="1" cols="64" id="register_account_tusc_address" type="text"></textarea>
+                    <br />
+                    Account names must be more than 7 and less than 64 characters.
+                    They must consist of lower case characters, numbers, and '-'.
+                    They cannot start with a number.
+                    <br />
+                    <br />
+                    <input type="button" id="register_account" value="Register new TUSC account"/>
+                    <br />
+                </div>
+            </div>
+            <hr />
+        </div>
+        <br /><br /><br /><br /><br /><br /><br />
+	</body>
+</html>

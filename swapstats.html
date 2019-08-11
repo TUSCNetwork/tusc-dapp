@@ -1,0 +1,35 @@
+<html>
+	<head>
+            <a href="index.html"><h2>Back</h2></a>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+        <script src="scripts.js"></script>
+        <script>
+        $(document).ready(function() {
+            getStats();
+        }); // End document ready
+        </script>
+	</head>
+	<body style="width:36em;margin: 0 auto;max-width: 100%;line-height: 1.5;font-size: 18px">
+		<h1>OCC to TUSC swap stats</h1>
+        <table style="width:100%;border: 1px solid black;">
+                <tr>
+                    <td style="width:30%;border: 1px solid black;"><h5>OCC left to swap:</h5></td>
+                    <td style="width:100%;border: 1px solid black;" id="occ_left_to_swap"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;"><h5>OCC swapped so far:</h5></td>
+                    <td style="width:100%;border: 1px solid black;" id="occ_swapped"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;" ><h5>TUSC swapped so far:</h5></td>
+                    <td style="width:100%;border: 1px solid black;" id="tusc_swapped"></td>
+                </tr>
+                <tr>
+                    <td style="border: 1px solid black;"><h5>Time until swap ends:</h5></td>
+                    <td style="width:100%;border: 1px solid black;" id="end_of_swap_date"></td>
+                </tr>
+        </table>
+        <hr />
+        <br /><br /><br /><br /><br /><br />
+	</body>
+</html>

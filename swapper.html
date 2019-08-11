@@ -1,0 +1,180 @@
+<html>
+	<head>
+            <a href="index.html"><h2>Back</h2></a>
+        <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+        <script src="scripts.js"></script>
+        <script src="contract.js"></script>
+		<script>
+            let contract;
+            let occ_contract;
+            let occ_balance = null;
+            let account_num = null;
+            window.addEventListener('load', async () => {
+                // Modern dapp browsers
+                if (window.ethereum) {
+                    window.web3 = new Web3(ethereum);
+                    try {
+                        await ethereum.enable(); // Request account access
+                    } catch (error) {
+                        console.log("ethereum.enable() failed: ");
+                        console.log(error);
+                    }
+
+                } else if (window.web3) { // Legacy dapp browsers
+                    window.web3 = new Web3(web3.currentProvider);
+                    // Accounts already exposed
+                }
+
+
+                if (typeof(web3) == 'undefined') {
+                    return console.log("(web3 not found)");
+                }
+
+                contract = web3.eth.contract(abi).at(contract_address);
+                occ_contract = web3.eth.contract(erc20_abi).at(occ_contract_address);
+
+                let html = "<option>--Select Account--</option>";
+                for (let i = 0; i < web3.eth.accounts.length; i++)
+                    html += '<option>' + web3.eth.accounts[i] + '</option>';
+
+                $('.accounts').html(html);
+                $('.accounts').on('change', function() {
+                    account_num = this.value;
+                    getBalance();
+                });
+
+                $('.approve_btn').click(function() {
+                    occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
+                        handleError(error);
+                        doSwap();
+                        //$('.swap_btn').show();
+                    });
+                });
+            });
+
+            function handleError(error) {
+                if (error) {
+                    console.log(error);
+                    alert(error);
+                    throw error;
+                }
+            }
+
+            async function doSwap()
+            {
+                if (confirm("Are you SURE the TUSC address is correct?")) {
+                var tusc_address = $("#tusc_address").val();
+                if (tusc_address == "") {
+                    return;
+                }
+
+                    let account_exists = await checkTuscAddress(tusc_address)
+                    if (!account_exists) {
+                        alert("TUSC address does not exist...aborting transaction.");
+                        return;
+                    }
+
+                    try {
+                        contract.doSwap.sendTransaction(tusc_address, {gasPrice: web3.toWei(4.1, 'Gwei') }, (error, result) => {
+                            handleError(error);
+
+                            console.log("txhash: " + result);
+                            $("#result").html('<a href="https://ropsten.etherscan.io/tx/' + result + '">Transaction Results</a>');
+                            // TODO: getTransactionReceipt
+                        });
+                    } catch (e) {
+                        console.log(e);
+                        alert("Error (details in console)");
+                    }
+                }
+            }
+
+            function getBalance()
+            {
+                occ_contract.balanceOf.call(account_num, (error, result) => {
+                    handleError(error);
+
+                    console.log(result);
+                    setOccBalance(result);
+                });
+            }
+
+            function setOccBalance(balance) {
+                occ_balance = balance;
+                var display_balance = (balance.c[0] / 10000).toFixed(5);
+                $('.balance').text('OCC Balance: ' + display_balance.toLocaleString());
+                document.getElementById("approve_btn").disabled = false;
+                //$('.approve_btn').show();
+            }
+
+            $(document).ready(function() {
+                $("#get_account_balance").click(async function(){
+                    var tusc_address = $("#account_balance_tusc_address").val();
+                    if (tusc_address != "") {
+                        try {
+                            var account_balance = await getTuscAccountBalance(tusc_address)
+                            if ( account_balance > -1 ) {
+                                let bal =  addDecimalPoint(account_balance, tusc_precision);
+                                document.getElementById("account_balance").innerHTML = bal + " TUSC" ;
+                            } else {
+                                document.getElementById("account_balance").innerHTML = "TUSC account does not exist";
+                            }
+                        } catch(error) {
+                            console.log(error)
+                        }
+                    }
+                });
+            }); // End document ready
+
+		</script>
+	</head>
+	<body style="width:36em;margin: 0 auto;max-width: 100%;line-height: 1.5;font-size: 18px">
+		<h1>Swap OCC tokens to TUSC tokens</h1>
+		<hr />
+        <div id="instructions">
+            <p>To be able to swap OCC tokens to TUSC tokens please follow the instructions below.</p>
+            
+            <ol type="1">
+                <li>Ensure you are using an up to date browser that supports Web3 wallets (e.g. Chrome, Firefox, Opera, Brave)</li>
+                <li>Ensure you have your browser's extension for the MetaMask wallet. If you do not, you should be able to get it <a href="https://metamask.io/">here</a>.</li>
+                <li>Once the MetaMask extension is installed, reload this page. You should see a popup from this site asking you to log into MetaMask.</li>
+                <li>Once logged in, select the account you'd like to swap OCC tokens from.</li>
+                <li>Enter in the TUSC account address you want to recieve swapped tokens into. If you do not have a TUSC account, please register a new one <a href="registerer.html">here</a>. </li>
+                <li>Press the "Approve Full OCC Balance Swap" button and confirm the prompt to begin the swap process.</li>
+                <li>Wait at least 15 minutes for the transfer to occur.</li>
+                <li>Retrieve your TUSC account's balance by using the appropriate form below.</li>
+            </ol>
+        </div>
+        <hr />
+        <div id="Forms">
+            <label for="accounts">Ethereum Account</label>
+            <select class='accounts'>
+                <option value="" disabled selected>Select your account</option>
+            </select>
+            <div class='balance'></div>
+            <br />
+            <label for="tusc_address">TUSC Address (to swap OCC into)</label><br />
+            <textarea rows="1" cols="64" type="text"></textarea>
+            
+            <br />
+            <input type="button" class="approve_btn" value="Approve Full OCC Balance Swap" disabled=true/>
+            <hr />
+
+            <br />
+            <div id="result"></div>
+            
+            <div><h2>Check TUSC account balance</h2>
+                <div>
+                    <label for="account_balance_tusc_address">TUSC account to check: </label><br />
+                    <textarea rows="1" cols="64" id="account_balance_tusc_address" type="text"></textarea><br /><br />
+                    <input type="button" id="get_account_balance" value="Check account balance"/><br /><br />
+                    <label for="account_balance">Account Balance:</label>
+                    <div class='account_balance' id='account_balance'></div>
+                    <br />
+                </div>
+            </div>
+            <hr />
+        </div>
+        <br /><br /><br /><br /><br /><br />
+	</body>
+</html>
