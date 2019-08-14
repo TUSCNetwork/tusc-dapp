@@ -1,4 +1,4 @@
-let swap_server_ip = "https://18.218.117.148";
+let swap_server_ip = "https://swap.tusc.network";
 let swap_server_port = "8080";
 let tusc_wallet_api = "/tusc/api/wallet/";
 let tusc_db_api = "/tusc/api/db/";
