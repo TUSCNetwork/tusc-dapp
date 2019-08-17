@@ -4,8 +4,34 @@
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="scripts.js"></script>
     <script type = "text/javascript" language = "javascript">
+        async function registerTuscAccount(public_key, tusc_address) {
+            var body = JSON.stringify({ "public_key": public_key, "account_name" : tusc_address });
+
+            $.ajax({
+                url: endpoint_register_account,
+                type: 'post',
+                data: body,
+                headers: {
+                    "Content-Type": 'application/json'
+                },
+                dataType: 'json',
+                success: function (response) {
+                    console.log(response);
+                    if (response.error){
+                        document.getElementById("register_account_result_text").innerHTML = response.error;
+                    } else if (response.result) {
+                        document.getElementById("register_account_result_text").innerHTML = "The TUSC account '" + tusc_address + "' was successfully created! \
+                                                                                            Please copy the below information and keep it for your records.";
+                        document.getElementById("register_account_result").innerHTML = JSON.stringify(response.result, null, 2);
+                    }
+                }
+            });
+        }
+
         $(document).ready(function() {
             $("#get_key_pair").click(async function(){
+                document.getElementById("get_key_pair").disabled = true;
+                setTimeout(function(){document.getElementById("get_key_pair").disabled = false;},3000);
                 try {
                     var brain_key = await suggestBrainKey();
                     if ( brain_key ) {
@@ -19,7 +45,32 @@
                     console.log(error);
                 }
             });
+
+            $("#register_account").click(async function(){
+                registerAccount()
+            });
+
+            $("#register_account_tusc_address").keydown(function(event) {
+                if (event.keyCode == 13) {
+                    registerAccount()
+                }
+            });
+
+            $("#register_account_tusc_address").keyup(function(event) {
+                $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
+            });
         }); // End document ready
+
+        function registerAccount(){
+            document.getElementById("register_account").disabled = true;
+            setTimeout(function(){document.getElementById("register_account").disabled = false;},3000);
+            var tusc_address = $("#register_account_tusc_address").val();
+            var pub_key = $("#register_account_public_key").val();
+            if (tusc_address == "" || pub_key == "") {
+                return;
+            }
+            registerTuscAccount(pub_key, tusc_address);
+        }
     </script>
 	</head>
     <body style="width:36em;margin: 0 auto;max-width: 100%;line-height: 1.5;font-size: 18px">
@@ -68,9 +119,9 @@
                 <div>
                     Write your <b>*public key*</b> that you received from above into the below text field.<br />
                     <label for="register_account_public_key">Your public key:</label><br />
-                    <textarea rows="2" cols="55" id="register_account_public_key" type="text"></textarea><br /><br />
+                    <textarea rows="2" cols="55" id="register_account_public_key" type="text"  placeholder="Your TUSC account *public key*"></textarea><br /><br />
                     Write the TUSC account name you want to use into the below text field:<br />
-                    <textarea rows="1" cols="64" id="register_account_tusc_address" type="text"></textarea>
+                    <textarea rows="1" cols="64" id="register_account_tusc_address" type="text"  placeholder="Your TUSC account name"></textarea>
                     <br />
                     Account names must be more than 7 and less than 64 characters.
                     They must consist of lower case characters, numbers, and '-'.
@@ -78,6 +129,8 @@
                     <br />
                     <br />
                     <input type="button" id="register_account" value="Register new TUSC account"/>
+                    <div id="register_account_result_text"></div><br />
+                    <div id="register_account_result"></div>
                     <br />
                 </div>
             </div>

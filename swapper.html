@@ -47,8 +47,23 @@
                     occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
                         handleError(error);
                         doSwap();
-                        //$('.swap_btn').show();
                     });
+                });
+
+                $("#swap_to_tusc_address").keydown(function(event) {
+                    if (document.getElementById("approve_btn").disabled == false) {
+                        return;
+                    }
+                    if (event.keyCode == 13) {
+                        occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
+                            handleError(error);
+                            doSwap();;
+                        });
+                    }
+                });
+
+                $("#swap_to_tusc_address").keyup(function(event) {
+                    $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
                 });
             });
 
@@ -63,7 +78,7 @@
             async function doSwap()
             {
                 if (confirm("Are you SURE the TUSC address is correct?")) {
-                var tusc_address = $("#tusc_address").val();
+                var tusc_address = $("#swap_to_tusc_address").val();
                 if (tusc_address == "") {
                     return;
                 }
@@ -104,27 +119,42 @@
                 var display_balance = (balance.c[0] / 10000).toFixed(5);
                 $('.balance').text('OCC Balance: ' + display_balance.toLocaleString());
                 document.getElementById("approve_btn").disabled = false;
-                //$('.approve_btn').show();
             }
 
             $(document).ready(function() {
                 $("#get_account_balance").click(async function(){
-                    var tusc_address = $("#account_balance_tusc_address").val();
-                    if (tusc_address != "") {
-                        try {
-                            var account_balance = await getTuscAccountBalance(tusc_address)
-                            if ( account_balance > -1 ) {
-                                let bal =  addDecimalPoint(account_balance, tusc_precision);
-                                document.getElementById("account_balance").innerHTML = bal + " TUSC" ;
-                            } else {
-                                document.getElementById("account_balance").innerHTML = "TUSC account does not exist";
-                            }
-                        } catch(error) {
-                            console.log(error)
-                        }
+                    getAccountBalance()
+                });
+
+                $("#account_balance_tusc_address").keydown(function(event) {
+                    if (event.keyCode == 13) {
+                        getAccountBalance()
                     }
                 });
+
+                $("#account_balance_tusc_address").keyup(function(event) {
+                    $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
+                });
             }); // End document ready
+
+            async function getAccountBalance() {
+                document.getElementById("get_account_balance").disabled = true;
+                setTimeout(function(){document.getElementById("get_account_balance").disabled = false;},3000);
+                var tusc_address = $("#account_balance_tusc_address").val();
+                if (tusc_address != "") {
+                    try {
+                        var account_balance = await getTuscAccountBalance(tusc_address)
+                        if ( account_balance != "-1" ) {
+                            let bal =  addDecimalPoint(account_balance, tusc_precision);
+                            document.getElementById("account_balance").innerHTML = bal + " TUSC" ;
+                        } else {
+                            document.getElementById("account_balance").innerHTML = "TUSC account does not exist";
+                        }
+                    } catch(error) {
+                        console.log(error)
+                    }
+                }
+            }
 
 		</script>
 	</head>
@@ -155,8 +185,8 @@
             </select>
             <div class='balance'></div>
             <br />
-            <label for="tusc_address">TUSC Address (to swap OCC into)</label><br />
-            <textarea rows="1" cols="64" type="text"></textarea>
+            <label for="swap_to_tusc_address">TUSC Account name (to swap OCC into)</label><br />
+            <textarea rows="1" cols="64" type="text" id="swap_to_tusc_address" placeholder="Your TUSC account name"></textarea>
             
             <br />
             <input type="button" class="approve_btn" value="Approve Full OCC Balance Swap" disabled=true/>
@@ -168,7 +198,7 @@
             <div><h2>Check TUSC account balance</h2>
                 <div>
                     <label for="account_balance_tusc_address">TUSC account to check: </label><br />
-                    <textarea rows="1" cols="64" id="account_balance_tusc_address" type="text"></textarea><br /><br />
+                    <textarea rows="1" cols="64" id="account_balance_tusc_address" type="text" placeholder="Your TUSC account name"></textarea><br /><br />
                     <input type="button" id="get_account_balance" value="Check account balance"/><br /><br />
                     <label for="account_balance">Account Balance:</label>
                     <div class='account_balance' id='account_balance'></div>

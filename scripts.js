@@ -25,12 +25,12 @@ async function checkTuscAddress(tusc_address) {
 async function getTuscAccountBalance(tusc_address) {
     var data = await $.getJSON(endpoint_list_account_balances + "/" + tusc_address.trim());
     if (data.error){
-        return -1;
+        return "-1";
     } else if (data.result) {
         if (data.result.length < 1) {
-            return -1;
+            return "0";
         } else {
-            return data.result[0].amount;
+            return data.result[0].amount.toString();
         }
     }
 }
@@ -67,6 +67,10 @@ async function getStats() {
 }
 
 function addDecimalPoint(numberAsString, precision) {
+    if (numberAsString == "0") {
+        return "0.0"
+    }
+
     // Add extra zeros on the left side if there aren't enough
     while (precision > numberAsString.length - 1) {
         numberAsString = "0" + numberAsString;
