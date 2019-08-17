@@ -13,11 +13,7 @@ async function checkTuscAddress(tusc_address) {
     if (data.error){
         return false;
     } else if (data.result) {
-        if (data.result.length < 1) {
-            return false;
-        } else {
-            return true;
-        }
+        return true;
     }
 }
 
