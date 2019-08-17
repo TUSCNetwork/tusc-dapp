@@ -44,21 +44,12 @@
                 });
 
                 $('.approve_btn').click(function() {
-                    occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
-                        handleError(error);
-                        doSwap();
-                    });
+                    preSwapChecks();
                 });
 
                 $("#swap_to_tusc_address").keydown(function(event) {
-                    if (document.getElementById("approve_btn").disabled == false) {
-                        return;
-                    }
                     if (event.keyCode == 13) {
-                        occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
-                            handleError(error);
-                            doSwap();;
-                        });
+                        preSwapChecks();
                     }
                 });
 
@@ -66,6 +57,30 @@
                     $(this).val($(this).val().replace(/[\r\n\v]+/g, ''));
                 });
             });
+
+            async function preSwapChecks() {
+                if (document.getElementById("approve_btn").disabled == true) {
+                    return;
+                }
+                
+                var tusc_address = $("#swap_to_tusc_address").val();
+                if (tusc_address == "") {
+                    return false;
+                }
+
+                let account_exists = await checkTuscAddress(tusc_address)
+                if (!account_exists) {
+                    alert("TUSC address does not exist...aborting transaction.");
+                    return false;
+                }
+
+                if (confirm("Are you SURE the TUSC address is correct?")) {
+                    occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
+                        handleError(error);
+                        doSwap();;
+                    });
+                }
+            }
 
             function handleError(error) {
                 if (error) {
@@ -77,30 +92,18 @@
 
             async function doSwap()
             {
-                if (confirm("Are you SURE the TUSC address is correct?")) {
-                var tusc_address = $("#swap_to_tusc_address").val();
-                if (tusc_address == "") {
-                    return;
-                }
 
-                    let account_exists = await checkTuscAddress(tusc_address)
-                    if (!account_exists) {
-                        alert("TUSC address does not exist...aborting transaction.");
-                        return;
-                    }
+                try {
+                    contract.doSwap.sendTransaction(tusc_address, {gasPrice: web3.toWei(4.1, 'Gwei') }, (error, result) => {
+                        handleError(error);
 
-                    try {
-                        contract.doSwap.sendTransaction(tusc_address, {gasPrice: web3.toWei(4.1, 'Gwei') }, (error, result) => {
-                            handleError(error);
-
-                            console.log("txhash: " + result);
-                            $("#result").html('<a href="https://ropsten.etherscan.io/tx/' + result + '">Transaction Results</a>');
-                            // TODO: getTransactionReceipt
-                        });
-                    } catch (e) {
-                        console.log(e);
-                        alert("Error (details in console)");
-                    }
+                        console.log("txhash: " + result);
+                        $("#result").html('<a href="https://ropsten.etherscan.io/tx/' + result + '">Transaction Results</a>');
+                        // TODO: getTransactionReceipt
+                    });
+                } catch (e) {
+                    console.log(e);
+                    alert("Error (details in console)");
                 }
             }
 
@@ -189,7 +192,7 @@
             <textarea rows="1" cols="64" type="text" id="swap_to_tusc_address" placeholder="Your TUSC account name"></textarea>
             
             <br />
-            <input type="button" class="approve_btn" id="approve_btn" value="Approve Full OCC Balance Swap" disabled=true/>
+            <input type="button" class="approve_btn" id="approve_btn" value="Approve Full OCC Balance Swap" disabled=true />
             <hr />
             
             <br />
