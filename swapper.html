@@ -51,7 +51,7 @@
                 });
 
                 $("#swap_to_tusc_address").keydown(function(event) {
-                    if (document.getElementById("approve_btn").disabled == false) {
+                    if (document.getElementById("#approve_btn").disabled == false) {
                         return;
                     }
                     if (event.keyCode == 13) {
@@ -118,7 +118,7 @@
                 occ_balance = balance;
                 var display_balance = (balance.c[0] / 10000).toFixed(5);
                 $('.balance').text('OCC Balance: ' + display_balance.toLocaleString());
-                document.getElementById("approve_btn").disabled = false;
+                document.getElementById("#approve_btn").disabled = false;
             }
 
             $(document).ready(function() {
