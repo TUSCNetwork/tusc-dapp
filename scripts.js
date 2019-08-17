@@ -1,11 +1,10 @@
 let swap_server_ip = "https://swap.tusc.network";
-let swap_server_port = "8080";
 let tusc_wallet_api = "/tusc/api/wallet/";
 let tusc_db_api = "/tusc/api/db/";
-let endpoint_list_account_balances = swap_server_ip + ":" + swap_server_port + tusc_wallet_api + "list_account_balances";
-let endpoint_register_account = swap_server_ip + ":" + swap_server_port + tusc_wallet_api + "register_account";
-let endpoint_suggest_brain_key = swap_server_ip + ":" + swap_server_port + tusc_wallet_api + "suggest_brain_key";
-let endpoint_swap_stats = swap_server_ip + ":" + swap_server_port + tusc_db_api + "swap_stats";
+let endpoint_list_account_balances = swap_server_ip + tusc_wallet_api + "list_account_balances";
+let endpoint_register_account = swap_server_ip + tusc_wallet_api + "register_account";
+let endpoint_suggest_brain_key = swap_server_ip + tusc_wallet_api + "suggest_brain_key";
+let endpoint_swap_stats = swap_server_ip + tusc_db_api + "swap_stats";
 let occ_precision = 18;
 let tusc_precision = 5;
 
