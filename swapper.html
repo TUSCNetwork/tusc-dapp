@@ -70,11 +70,11 @@
 
                 let account_exists = await checkTuscAddress(tusc_address)
                 if (!account_exists) {
-                    alert("TUSC address does not exist...aborting transaction.");
+                    alert("TUSC account name does not exist...aborting transaction.");
                     return false;
                 }
 
-                if (confirm("Are you SURE the TUSC address is correct?")) {
+                if (confirm("Are you SURE the TUSC account name is correct?")) {
                     occ_contract.approve.sendTransaction(contract_address, occ_balance, (error, result) => {
                         handleError(error);
                         doSwap(tusc_address);
@@ -146,7 +146,7 @@
 
                 let account_exists = await checkTuscAddress(tusc_address)
                 if (!account_exists) {
-                    document.getElementById("account_balance").innerHTML = "TUSC account does not exist";
+                    document.getElementById("account_balance").innerHTML = "TUSC account name does not exist";
                     return;
                 }
 
@@ -180,7 +180,7 @@
                     If you need information on Ethereum and gas please look <a href="https://tusc.network/understanding-gas-and-ethereum-transactions/">here</a>.</li>
                 <li>Once the MetaMask extension is installed, reload this page. You should see a popup from this site asking you to log into MetaMask.</li>
                 <li>Once logged in, select the account you'd like to swap OCC tokens from.</li>
-                <li>Enter in the TUSC account address you want to recieve swapped tokens into. If you do not have a TUSC account, please register a new one <a href="registerer.html">here</a>. </li>
+                <li>Enter in the TUSC account name you want to recieve swapped tokens into. If you do not have a TUSC account, please register a new one <a href="registerer.html">here</a>. </li>
                 <li>Press the "Approve Full OCC Balance Swap" button and confirm the prompt to begin the swap process.</li>
                 <li>Wait at least 15 minutes for the transfer to occur.</li>
                 <li>Retrieve your TUSC account's balance by using the appropriate form below.</li>
