@@ -8,7 +8,7 @@ contract OCC {
 }
 
 // Test Ropsten Omega: 0x728d7624f809462b80f7d05fdd897e563c45a36b
-
+// Mainnet Omega: 0x3cC9FC1Ec11CE649A2f15aCe9850Ae441CEc47fA
 contract OCC2TUSC {
     address omega_address;
     OCC public occ_token;
@@ -37,11 +37,4 @@ contract OCC2TUSC {
         }
         return false;
     }
-    
-    /*
-    function getOccBalance() public returns (uint256) {
-        last_occ_balance = occ_token.balanceOf(msg.sender);
-        return last_occ_balance;
-    }*/
-    
 }
