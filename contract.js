@@ -1,10 +1,10 @@
 //ropsten  *****************************************
-//const contract_address = "0x04861e6eb04889f0549d52be118e7c66e92ac9dc";
-//const occ_contract_address = "0x75584b2bfa5eb391c8234abcfb4cde5c07e2cf30";
+const contract_address = "0x04861e6eb04889f0549d52be118e7c66e92ac9dc";
+const occ_contract_address = "0x75584b2bfa5eb391c8234abcfb4cde5c07e2cf30";
 
 // Mainnet
-const contract_address = "0xc29a69daf6b159ffaa183652f4b9e9e673d88647";
-const occ_contract_address = "0x0235fe624e044a05eed7a43e16e3083bc8a4287a";
+// const contract_address = "0xc29a69daf6b159ffaa183652f4b9e9e673d88647";
+// const occ_contract_address = "0x0235fe624e044a05eed7a43e16e3083bc8a4287a";
 
 const erc20_abi = [
 {
