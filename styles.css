@@ -10,3 +10,7 @@ body {
   width: 400px;
   z-index: -1;
 }
+
+a {
+  color: yellow;
+}
