@@ -8,7 +8,7 @@
     <script type = "text/javascript" language = "javascript">
         async function registerTuscAccount(public_key, tusc_address) {
 			var rrf = grecaptcha.getResponse();
-            var body = JSON.stringify({ "public_key": public_key, "account_name" : tusc_address, recaptcha_response: rrf });
+            var body = JSON.stringify({ "public_key": public_key, "account_name" : tusc_address, "recaptcha_response": rrf });
 
             $.ajax({
                 url: endpoint_register_account,
