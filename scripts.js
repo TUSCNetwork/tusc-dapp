@@ -55,6 +55,7 @@ async function getStats() {
         document.getElementById("occ_left_to_swap").innerHTML = addDecimalPoint(data.occ_left_to_swap, occ_precision);
         document.getElementById("occ_swapped").innerHTML = addDecimalPoint(data.occ_swapped, occ_precision);
         document.getElementById("tusc_swapped").innerHTML = data.tusc_swapped;
+        document.getElementById("number_of_registrations").innerHTML = data.number_of_registrations;
 
         calcEndofSwap(data.end_of_swap_date);
         var x = setInterval(function() {calcEndofSwap(data.end_of_swap_date);}, 1000);
